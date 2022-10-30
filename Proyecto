@@ -1,0 +1,1315 @@
+CREATE database IF NOT EXISTS Proyecto_final;
+
+USE Proyecto_final;
+
+-- Table 'Categoria'
+
+CREATE TABLE IF NOT EXISTS Categoria (
+   id_Categoria INT NOT NULL primary KEY AUTO_INCREMENT,
+   Nombre VARCHAR(80) NOT NULL);
+
+-- Table 'Clientes_(usuarios)'
+
+CREATE TABLE IF NOT EXISTS Clientes_usuarios(
+  id_Clientes INT NOT NULL primary key AUTO_INCREMENT,
+  Holder_name VARCHAR(100) NOT NULL,
+  Edad INT NOT NULL,
+  Dirección VARCHAR(80) NOT NULL,
+  Telefono VARCHAR(25) NOT NULL,
+  Email VARCHAR(80) NOT NULL);
+
+-- Table 'Aliados'
+
+CREATE TABLE IF NOT EXISTS Aliados (
+  id_Store INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Nombre_store VARCHAR(80) NOT NULL,
+  id_cuenta_banc VARCHAR(80) NOT NULL,
+  Dirección VARCHAR(80) NOT NULL,
+  Telefono VARCHAR(25) NOT NULL,
+  id_categoria INT NOT NULL,
+  foreign key (id_categoria) references Categoria(id_categoria));
+
+-- Table Productos
+
+CREATE TABLE IF NOT EXISTS Productos(
+  id_Producto INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Nombre VARCHAR(80) NOT NULL,
+  Marca VARCHAR(80) NOT NULL,
+  Precio DECIMAL NOT NULL,
+  id_categoria INT NOT NULL,
+  foreign key (id_categoria) references Categoria(id_categoria),
+  Id_store INT NOT NULL,
+  foreign key (Id_store) references Aliados(Id_store));
+ 
+-- Table Ventas
+
+CREATE TABLE IF NOT EXISTS Ventas(
+  id_Venta INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Fecha_venta DATE NOT NULL,
+  id_clientes INT NOT NULL,
+  foreign key (id_clientes) references Clientes_usuarios(id_clientes),
+  id_producto INT NOT NULL,
+  foreign key (id_producto) references Productos(id_producto),
+  valor_a_pagar decimal) ;
+  
+-- Table Matriz_ventas
+
+CREATE TABLE IF NOT EXISTS Matriz_ventas (
+  id_VentaXProducto INT NOT NULL primary key AUTO_INCREMENT,
+  id_venta INT NOT NULL,
+  foreign key (id_venta) references Ventas(id_venta),
+  Comisión DECIMAL(8,2) NOT NULL,
+  Impuestos DECIMAL(8,2) NOT NULL,
+  valor_a_transferir_aliado DECIMAL NOT NULL);
+  
+  -- Table Matriz_pagos
+  
+CREATE TABLE IF NOT EXISTS Matriz_pagos(
+  id_pago INT NOT NULL primary key AUTO_INCREMENT,
+  Cuenta_pago VARCHAR(45) NOT NULL,
+  Bank_reference VARCHAR (45) NOT NULL,
+  id_VentaXProducto INT NOT NULL,
+  foreign key (id_VentaXProducto) references Matriz_ventas(id_VentaXProducto),
+  valor_a_transferir_aliado DECIMAL(8,0) NOT NULL);
+
+-- Table Eventos
+
+CREATE TABLE IF NOT EXISTS Eventos (
+  id_evento INT NOT NULL primary key AUTO_INCREMENT,
+  id_VentaXProducto INT NOT NULL,
+  foreign key (id_VentaXProducto) references Matriz_ventas(id_VentaXProducto),
+  Gateway VARCHAR(80) NOT NULL,
+  Update_at DATETIME NOT NULL,
+  Status VARCHAR(80) NOT NULL,
+  Valor_a_pagar DECIMAL(8,2) NOT NULL,
+  Event_type VARCHAR(80) NOT NULL);
+
+-- Table Extracto
+
+CREATE TABLE IF NOT EXISTS Extracto (
+  id_movimiento INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  id_pago int ,
+  foreign key (id_pago) references Matriz_pagos(id_pago),
+  Cuenta_pago VARCHAR(45) NOT NULL,
+  Bank_reference VARCHAR(45) NOT NULL,
+  id_cuenta_banc VARCHAR(80) NOT NULL,
+  Valor_a_pagar DECIMAL(8,2) NOT NULL,
+  Saldo DECIMAL(10,2) NOT NULL);
+  
+  insert into categoria values 
+(null,'Restaurantes'),
+(null, 'CPGs'),
+(null, 'Turbo'),
+(null, 'PCR');
+
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (1,'ERIKA ALEXANDRA TORRES ZARATE',48,'Carrera 43A # 18 Sur 200','3160176608','ERIKATORRES@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (2,'CARLOS ALBERTO BERMUDEZ CARDENAS',45,'Av. 1 de Mayo # 39A-95','3183350612','CARLOSBERMUDEZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (3,'GUSTAVO ADOLFO HERRERA ALZATE',23,'Carrera 56Â No. 4-34 ','3183365317','GUSTAVOHERRERA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (4,'ALEJANDRO OREJUELA QUINTERO ',22,'Avenida Calle 80 No 102-15 ','3153974138','ALEJANDROQUINTERO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (5,'JESUS DAVID SILVA VARGAS',47,'Transversal 94 No. 80 A-03 ','3153974138','JESUSSILVA@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (6,'FABIAN ANDRES MIRANDA MURILLO',29,'Cra 99 # 17-20','3160174848','FABIANMIRANDA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (7,'ANGIE PAOLA SEGRERA SOTO',28,'Cra 77G # 63-17 Sur  ','1234567','ANGIESEGRERA@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (8,'FAIVER RAMIREZ SOLER ',45,'Carrera 100 No. 18-84 ','3207671117','FAIVERSOLER@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (9,'KAREN MARCELA CALDERON LUNA',35,'Calle 153Bis # 103B-84  ','3125533144','KARENCALDERON@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (10,'WILDER GONZALEZ MORENO ',22,'Cra 102A # 132-03 Local 106  ','3148761576','WILDERMORENO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (11,'SANDRA ANGELA PATRICIA HERNANDEZ',35,'Carrera 51 No. 50-02 Sur ','3184036004','SANDRAPATRICIA@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (12,'KAREN LORENA AGUDELO CASTRILLON',27,'Cra 100 # 40-11  ','5256202','KARENAGUDELO@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (13,'ANDRES FELIPE FLOREZ ZULETA',40,'Cra 80 No. 46-39 Sur','3115505707','ANDRESFLOREZ@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (14,'JHON ALEXANDER FERNANDEZ MARTINEZ',33,'Calle 65SUR # 80A-27 ','3107167929','JHONFERNANDEZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (15,'CHRISTIAN DAVID MARTINEZ ',35,'Centro Comercial Iserra','3202965156','CHRISTIANMARTINEZ@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (16,'PAULA ANDREA ARCE VELASCO',26,'Cl. 7 #3-15','3207549907','PAULAARCE@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (17,'DUVAN ALONSO RAMIREZ BENJUMEA',38,'Cra. 85a #23c-36','3203559671','DUVANRAMIREZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (18,'ANGELA MARIA BECERRA TORRES',29,'Cl. 16c #17','3204950152','ANGELABECERRA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (19,'ROGER BALANTA MURCIA ',35,'Cll 186a # 15 - 74 Bogota','3132445072','ROGERMURCIA@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (20,'LAURA ALZATE GRAJALES ',47,'Cra. 17 #65-22','3124290299','LAURAGRAJALES@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (21,'OLGA LUCIA RAMIREZ SERNA',45,'Calle 20 82 - 52 ','316179670','OLGARAMIREZ@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (22,'MONICA VIVIANA REYNOSO AVELLANEDA',28,'Calle 20 #82-52','6043636','MONICAREYNOSO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (23,'VANESA PUENTES CASTRO ',45,'Calle 20 #82-52','3127433687','VANESACASTRO@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (24,'DIEGO HERNANDEZ TORRES ',34,'Cl. 93b #13-67','3127433687','DIEGOTORRES@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (25,'ANDREA CRISTINA MORA GARCIA',18,'Cra. 5 #37-34','3160103978','ANDREAMORA@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (26,'JUAN PABLO DEVIA LEON',48,'Cra. 5 #37-34','3023739','JUANDEVIA@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (27,'JUAN CARLOS TOBON VELEZ',35,'Cra. 5 #37-34','3102111111','JUANTOBON@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (28,'LILIANA CAROLINA RODRIGUEZ RODRIGUEZ',28,'Cra 71 D # 2 A-05','3102111111','LILIANARODRIGUEZ@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (29,'ANDREA LILIANA PALOMINO LICHT',19,'Avenida Calle 85 #12-61','6094058','ANDREAPALOMINO@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (30,'DIANA CAROLINA CLAVIJO ROSERO',41,'Cl. 63d #21-55','3057870773','DIANACLAVIJO@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (31,'MARIA GABRIELA AGUIRRE DELGADO',18,'Cl. 65b #84-52','3232065674','MARIAAGUIRRE@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (32,'PAOLA TORRENEGRA GALVIS ',19,'Cra. 17 #37-11','16094058','PAOLAGALVIS@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (33,'CAMILO HERNANDEZ SOLUCIONES SA',40,'Cl. 45 #20-63','3154740356','CAMILOSOLUCIONES@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (34,'LUZ MARINA ARTEAGA GALLEGO',23,'Cl. 25 #2','16094058','LUZARTEAGA@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (35,'NORMA LUCIA RODAS GIRALDO',22,'Cl. 17a Sur #14-08','3173699244','NORMARODAS@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (36,'CLAUDIA LUCIA CAMARGO GOMEZ',39,'Cra. 15 #3-28','3174387928','CLAUDIACAMARGO@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (37,'LUIS ALEXANDER BEJARANO MENDIVELSO',47,'Cra. 45b #12798','6094058','LUISBEJARANO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (38,'JAVIER DAVID PERDOMO CARDONA',35,'Dg 52 B Sur #26-35','3232290359','JAVIERPERDOMO@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (39,'LIDA ALEJANDRA MARTINEZ ',19,'Cl. 19b Nte. #264','3014094146','LIDAMARTINEZ@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (40,'ANGELA LUCIA PIEDRAHITA ESPINOSA',34,'Carrera 80 #3816','3217196670','ANGELAPIEDRAHITA@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (41,'EVELYN ARROYO SCARPETTA ',49,'Carrera 80 # 38 - 16','43664307','EVELYNSCARPETTA@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (42,'LAURA ALEJANDRA RINCON CEPEDA',50,'Cl. 37a Bis #12-40','3223059001','LAURARINCON@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (43,'JUAN DAVID SIERRA RODRIGUEZ',39,'Cra. 95g #90-31','3163200451','JUANSIERRA@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (44,'NATALIA MARTINEZ ARANGO ',36,'Cl. 27 #46-70','3156611958','NATALIAARANGO@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (45,'JOHANA RAMIREZ SIERRA ',34,'CRA 9 NÂ°139-47','3156611958','JOHANASIERRA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (46,'YESID FABIAN RONCANCIO CHAVES',32,'Av Carrera 68 # 90-88','3156611958','YESIDRONCANCIO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (47,'MARIA SUSANA HERRERA MEJIA',29,'Av Boyaca #80-94 Piso 3 local 330','3156611958','MARIAHERRERA@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (48,'MARIA EUGENIA ZAMBRANO BENAVIDES',47,'Poner El Pin En El Pitstop Del Centro Comercial Mallplaza (Anteriormente Calima)','3008331564','MARIAZAMBRANO@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (49,'CAMILO BASURDO MARTINEZ ',36,'Calle 31 # 44 -239 local 302-303	palmira','3167947830','CAMILOMARTINEZ@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (50,'EDDYE ALEJANDRO PEREZ VARON',32,'Ac. 3 #51-11','3508875349','EDDYEPEREZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (51,'FERRETERIA LUIS PENAGOS SAS',38,'Calle 58#14-100','4645363456','FERRETERIAPENAGOS@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (52,'IVAN DAVID FORERO DELGADILLO',37,'Cra. 26 #121-9','4645363456','IVANFORERO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (53,'LISET YJAIRA GOMEZ TAMARA',50,'Calle 28 25 Bâ€“365','235645332','LISETGOMEZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (54,'DIANA MARCELA MARTINEZ MARTINEZ',28,' Calle 98b #63-10 - Entrar a la Clinica Pet Company','3185229550','DIANAMARTINEZ@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (55,'CARLOS ALBERTO BRAND OCHOA',48,'Carrera 113 #83a-42','3004151511','CARLOSBRAND@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (56,'PAOLA ANDREA DIAZ CARABALI',41,'Cl. 134a #53-82','4645363456','PAOLADIAZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (57,'SEBASTIAN MEDINA GARCIA ',18,'CC PLAZA CAMPESTRE','4645363456','SEBASTIANGARCIA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (58,'YULIANA GALLARDO JIMENEZ ',18,'Cl. 41a #26-5','4645363456','YULIANAJIMENEZ@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (59,'MARIA ROCIO AVENDAÃ‘O GARCIA',39,'Cl. 22d #17-88','4645363456','MARIAAVENDAÃ‘O@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (60,'KAREN SANCHEZ UPEGUI ',46,'Av rappi 321 #321','4645363456','KARENUPEGUI@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (61,'ANDRES MAURICIO RUIZ CHAVEZ',30,'AV LINEAL 322 #322','3197295312','ANDRESRUIZ@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (62,'NESTOR BALLESTEROS LIZARAZO ',18,'Bello','3104043920','NESTORLIZARAZO@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (63,'BRANDON LUIS LOZADA RUBIO',38,'Cl. 49 #38-43','3236500000','BRANDONLOZADA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (64,'LAURA OSPINA OSPINA ',46,'Carrera 19 #12-66','3017600255','LAURAOSPINA@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (65,'KARLO RENNY DIAZ CAMARGO',28,'Carrera 48 #10-45','3158151564','KARLODIAZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (66,'CLAUDIA LORENA GONZALEZ VALLEJO',29,'Ak. 15 #141-85','3186423310','CLAUDIAGONZALEZ@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (67,'CAMILO ANDRES HERNANDEZ CASTRO',39,'AV LINEAL 323 #323','3175051528','CAMILOHERNANDEZ@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (68,'LEIDYS SUSANA BARAJAS CAMACHO',28,'Cra. 76 #19-4','3193736505','LEIDYSBARAJAS@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (69,'NELLY MARIA MOJICA BARRERA',42,'AV LINEAL 324 #324','3148761576','NELLYMOJICA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (70,'MATEO GONZALEZ MARIN ',29,'AV LINEAL 325 #325','3148761576','MATEOMARIN@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (71,'DANIELA CAROLINA NARVÃ¡EZ TINOCO',35,'AV LINEAL 326 #326','3003538116','DANIELANARVÃ¡EZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (72,'NICOLAS GUSTAVO ROJAS GARZON',41,'Cra. 72 #51 sur 07','3148884221','NICOLASROJAS@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (73,'JOYNER IVAN GALLARDO POLO',28,'AV LINEAL 327 #327','3132824784','JOYNERGALLARDO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (74,'DIANA MARCELA JIMENEZ SEPULVEDA',30,'Cra. 73 #40-19','3204677461','DIANAJIMENEZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (75,'GINA PAOLA PEREZ ',36,'Tv. 35a #29b 88 sur','3023342725','GINAPEREZ@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (76,'MIGUEL ANGEL ACEVEDO RUIZ',18,'Cl. 38b Sur #78-13','3023342725','MIGUELACEVEDO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (77,'RAFAEL ANTONIO PEREZ MACEA',38,'Cali','44889461','RAFAELPEREZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (78,'JHON ALEXANDER CUBIDES RUBIANO',22,'Cl. 39 #35a-8','3223847342','JHONCUBIDES@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (79,'PAOLA CHAVEZ RAMIREZ ',30,'Cl. 46 #2749','3143595931','PAOLARAMIREZ@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (80,'NATALIA ANGELICA PARDO GÃ³MEZ',46,'Carrera 52 #55-41','3107773603','NATALIAPARDO@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (81,'JOSE ALEJANDRO VELEZ GOMEZ',39,'Calle 77 #69p-33','3214120107','JOSEVELEZ@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (82,'LUZ ANDREA CASTRO VARGAS',21,'Calle 32B #69-16','3143595931','LUZCASTRO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (83,'ANGELO ALEXANDER HENAO CASTRO',41,'Diagonal 40 #33 Sur-16','3143595931','ANGELOHENAO@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (84,'STEFANY NATALIA ORTEGA PORTILLA',27,'Parque 3 Etapa Praderas De Santa Rita','3214120107','STEFANYORTEGA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (85,'JUAN FELIPE SARMIENTO DIAZ',31,'Calle 64B casa103','3044864577','JUANSARMIENTO@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (86,'ALEJANDRO OREJUELA QUINTERO ',40,'Conjunto Residencial Prados De Castilla Etapa 4','3053158100','ALEJANDROQUINTERO@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (87,'ZULY KATHERINE TORRES SERRANO',20,'Carrera 13 #21 n 54','300 5533849','ZULYTORRES@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (88,'KELLY JHOANA CARDENAS PEREZ',40,'Cra. 16e # 17-36','300 5533849','KELLYCARDENAS@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (89,'JENNIFER ANDREA TORRES BERNAL',18,'Cra. 56 #185-27','3163087525','JENNIFERTORRES@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (90,'MARIA XIMENA MARTINEZ CHAVEZ',35,'cacique centro comercial cl 93 34 99 bucaramanga santander ','3144701325','MARIAMARTINEZ@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (91,'ISRAEL NOCUA SANCHE ',42,'Calle 185 No. 45 - 03 Local N3-186','3156518199','ISRAELSANCHE@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (92,'OSCAR HUMBERTO ARDILA GARCIA',48,'calle 14 # 18H 39','3208148694','OSCARARDILA@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (93,'CAMILO ANDRES BLANCO GOODING',18,'Calle 45 # 1 â€“ 85','3160428748','CAMILOBLANCO@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (94,'JONATHAN STEVEN LORA GONZALEZ',47,'Calle 45 # 1 â€“ 85','3135122858','JONATHANLORA@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (95,'YANETH ANGELICA RODRIGUEZ CASTRO',36,'CALLE 3 #13-04 PEREIRA','53269222','YANETHRODRIGUEZ@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (96,'CATALINA PUERTA PADILLA ',18,'CALLE 3 #13-04 PEREIRA','12268743','CATALINAPADILLA@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (97,'JIMMY ALEJANDRO SUAREZ GOMEZ',36,'CALLE 3 #13-04 PEREIRA','3043589962','JIMMYSUAREZ@gmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (98,'LEIDY KATHERINE VARGAS CACERES',28,'Calle 45 # 2-09 (Ciudadela)','3104704128','LEIDYVARGAS@hotmail.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (99,'ILKO ARCOASEO  ',42,'Dg. 7a Bis C #75-4','3114224298','ILKO@yahoo.com');
+INSERT INTO clientes_usuarios (`id_Clientes`,`Holder_name`,`Edad`,`Dirección`,`Telefono`,`Email`) VALUES (100,'MILENYS MARIA JIMENEZ OROZCO',34,'calle 116 No. 18b-68','3017702535','MILENYSJIMENEZ@gmail.com');
+
+
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1000,'GRUPO GP SAS SAS','57650354801','CRA3  10','318 3573277',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1001,'TECNOGIK','60973538597','CRA 5   83 CARRERA 5A 48A100','3002288735',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1002,'COMERCIALIZADORA A Y ROMERO COMPANIA SAS','1935948716','CARRERA 3  1236 LOCAL 101','3209310679',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1003,'TRADE SOLUTIONS GROUP SAS','81121246','CARRERA 16 SUR  96-48 MERCACENTRO 10','3195918622',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1004,'CREACIONES Y NOVEDADES','5769996223','CRA5  61-41','3146172134',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1005,'VAPEADORES VUSE','80322811750','CALLE 2 NO 12-26','2962333123',3);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1006,'CARULLA','4522014658','CR 57A  74A-45','4521025623',3);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1007,'TUFERRETERIACOM SAS','21000056466','CRA 68 95-114','3195918622',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1008,'SALUDCAN VETERINARIA','5459523601','MALL PLAZA LC 154','3164512806',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1009,'BUTHERS BAKERY SAS','6244974412','CRA 4 2 18 MOSQUERA ','3158661727',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1010,'GOUTMETFAMILY','91211740774','CL 46 SUR 42B - 05','3123828416',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1011,'WELSTAR','191125616','CL 46 SUR 42B - 05','13459010',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1012,'MAGENTA COSMETICOS','22575482646','CARRERA 51B 80-58','3183349637',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1013,'MI PROTEINA1','18000069270','CARRERA 51B 80-58','3223819468',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1014,'TIENDAS PLANETARICA SAS','4580000','CALLE 168 62-10','3016442967',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1015,'MAXFITNESSMF','37500013126','CALLE 80 NO 51B-10','3214574572',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1016,'REGALOS TQM','144017506','AQUARELA MALL','3186523966',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1017,'BARRIO ROJO','17400070792','DG 62 SUR 20A-42','3183729995',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1018,'PANAFARGO SAS','59976045216','CARRERA 3 N 8-128 ','3052370330',4);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1019,'ONE WAY MARS','90757676337','CL 14 14-08','3043938058',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1020,'RAZAS VETERINARIA','47720800434','CLL 24 75-35','3016891768',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1021,'FV COMUNICAR PAPELERIA','136466562','CLL 24 75-35','3043938058',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1022,'CORRAL','24072239126','CALLE 18 13-22','3610103313',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1023,'DISTRIBUCIONES JAIVISA SAS','700005496','CALLE 20A 96B-5','3507050426',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1024,'FRUVER CAMPO COLOMBIANO SAS','46230058334','CALLE 20A 96B-5','3157709551',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1025,'DELIRICO','23300000314','CRA 69 2-36','3054697148',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1026,'GUADALUPE RESTAURANTE','75003927849','CRA 15A 11-28','3126802787',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1027,'SEXSHOP','570000001','CENTRO COMERCIAL PUERTA DEL NORTE','3054630561',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1028,'VIVERO DEL PARAISO','28065410879','DIAG31 71-130 - CC LA PLAZUELA','3224070002',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1029,'TORAL SAS','600002199','CARRERA 84F  3C 39','3042046660',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1030,'YEI STORE COLOMBIA','19256015','CARRERA 17 10 - 37 LOCAL 2 TORRE EPIC PINARES','300 6369515',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1031,'EXITO','1571064461','CENTRO COMERCIAL BOLIVAR','3168496004',3);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1032,'NEOBYTE TIENDA ONLINE','60935726533','CRA 4 NO 11 A 119 EL RODADERO','3226593627',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1033,'DUALTRONICA','30032952026','CRA 12 93-57','3043752720',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1034,'LOOMI FOODS','198175226','CRA 9 57-15','3023993128',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1035,'SR WOK','91205668671','CL 71SUR 43A-69 PISO1','3006295313',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1036,'EL BAUL DE JOAQUIN','593143708','CRA 37 30-51','3194703580',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1037,'LA POCHE','23100001113','CRA 7  62B  07 LA CASTELLANA   MONTERIA ','3046768764',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1038,'ANTOJATE ONLINE','81577718679','CL 29A 53-34','3105694039',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1039,'DELI','7600722388','CALLE 33 76-103','25632541',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1040,'FRIGONORTE HOME','825648950','CRA 12  93-64','3052661007',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1041,'TIENDA ONLINE DUCOR','6965594408','CALLE 13 16-44','3052661007',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1042,'CHOCOLATERIA EVOCACION','82000003178','MZ12A CASA 1JARDIN 2A ETAPA','3186420887',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1043,'SELVAMORA','5700001','CL 7 20-15','3208679679',1);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1044,'PEPPERLANDCO PETSHOP','1551330491','CALLE 67 SUR 44-11','3157594148',2);
+INSERT INTO aliados (`id_Store`,`Nombre_store`,`id_cuenta_banc`,`Dirección`,`Telefono`,`id_categoria`) VALUES (1045,'SEX-MEN','26169996951','CRA 31A 7A-03','3146162576',2);
+
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4000,'HAMBURGUESA EN COMBO','PROPIA',20000,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4001,'PERRO CALIENTE EN COMBO','PROPIA',15000,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4002,'SALCHIPAPA','PROPIA',10000,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4003,'PORCION PAPA FRANCESA','PROPIA',5000,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4004,'HAMGURGUESA','PROPIA',10500,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4005,'GASEOSA PERSONAL','POSTOBON',3000,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4006,'GASEOSA 1.5 LT','COCA-COLA',5000,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4007,'ENSALADA ESPECIAL','PROPIA',14500,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4008,'ANILLOS DE CEBOLLA','PROPIA',7000,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4009,'WRAP DE LOMO','PROPIA',15000,1,1000);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4010,'CARGADOR CELULAR','SAMSUMG',60000,2,1001);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4011,'CARGADOR CELULAR','IPHONE',115000,2,1001);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4012,'PROTECTOR DE PANTALLA','GENERICA',5000,2,1001);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4013,'SOPORTE CELULAR','GENERICA',30000,2,1001);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4014,'AUDIFONOS','SAMSUMG',70000,2,1001);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4015,'GRANOLA 1 KL','PROPIA',10000,2,1002);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4016,'ALMENDRAS','PROPIA',12000,2,1002);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4017,'CEREAL','PROPIA',8000,2,1002);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4018,'PISTACHOS','PROPIA',9000,2,1002);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4019,'VASENILLA PORTATIL','PROPIA',50000,2,1003);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4020,'CUCHARAS ENTRENADORAS BEBE','PROPIA',15000,2,1003);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4021,'TINA PORTATIL','PROPIA',185000,2,1003);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4022,'LIMA ELECTRICA','PROPIA',59000,2,1003);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4023,'MUÃ‘ECA DE TRAPO','PROPIA',23000,2,1004);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4024,'ABUELITOS DE PELUCHE','PROPIA',35000,2,1004);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4025,'ARREGLO DE FLORES CONCHOCOLATES','PROPIA',60000,2,1004);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4026,'DESAYUNO PARA OCASIÃ“N ESPECIAL','PROPIA',90000,2,1004);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4027,'CIGARILLO ELECTRICO','VUSE',30000,3,1005);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4028,'VAPEADOR GOLD','VUSE',25000,3,1005);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4029,'CARGADOR MAGNETICO','VUSE',10000,3,1005);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4030,'BUNDLE ICED','PROPIA',57000,3,1005);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4031,'BODKA 1 LT','PROPIA',65000,3,1006);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4032,'LIMON MALLA','PROPIA',2000,3,1006);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4033,'PAPAS MARGARITA CEBOLLA','PROPIA',6000,3,1006);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4034,'6 PACK CORONA','PROPIA',30000,3,1006);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4035,'EXTENSION DE 2 M','PROPIA',25000,2,1007);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4036,'ROLLO CINTA ANTIDESLIZANTE','PROPIA',30000,2,1007);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4037,'DUCHA ELECTRICA','PROPIA',54900,2,1007);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4038,'GATO MECANICO','PROPIA',80900,2,1007);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4039,'CAMA PARA PERRO','PROPIA',130000,2,1008);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4040,'HUESOS','PROPIA',18000,2,1008);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4041,'ARENERO','PROPIA',240000,2,1008);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4042,'PECHERA PERRO O GATO','PROPIA',40000,2,1008);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4043,'PAN ROLLO','PROPIA',500,1,1009);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4044,'TORTA CUMPLEAÃ‘OS 10 PORCIONES','PROPIA',25000,1,1009);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4045,'PAN BAGUETTE','PROPIA',3000,1,1009);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4046,'CHOCOLATE','PROPIA',2500,1,1009);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4047,'PECHUGA A LA PLANCHA','PROPIA',25000,1,1010);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4048,'CARNE EN BISTEC','PROPIA',30000,1,1010);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4049,'LOMO BBQ','PROPIA',27000,1,1010);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4050,'JUGO NATURAL','PROPIA',5000,1,1010);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4051,'BALON FUTBOL','PROPIA',70000,2,1011);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4052,'BALON VOLEYBALL','PROPIA',65000,2,1011);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4053,'BALON BALONCESTO','PROPIA',75000,2,1011);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4054,'MALLA MESA PING PONG','PROPIA',90000,2,1011);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4055,'POLVO COMPACTO','PROPIA',30000,2,1012);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4056,'BASE LIQUIDA','PROPIA',15000,2,1012);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4057,'JUEGOS DE SOMBRAS','PROPIA',45000,2,1012);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4058,'MASCARILLA ','PROPIA',15000,2,1012);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4059,'BATIDO NUTRIX','PROPIA',12000,1,1013);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4060,'BATIDO ENERGETICO','PROPIA',11000,1,1013);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4061,'BATIDO DESINTOXICAR','PROPIA',15000,1,1013);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4062,'TORTA SALUDABLE','PROPIA',8000,1,1013);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4063,'MOZZARELLA EN BLOQUE ','PROPIA',14500,2,1014);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4064,'SUERO COSTEÃ‘O','PROPIA',14000,2,1014);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4065,'YOGURT GRIEGO','PROPIA',23000,2,1014);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4066,'AREQUIPO X1000 G','PROPIA',30000,2,1014);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4067,'PROTEINA HIDROLIZADA','FULLFIT',120000,2,1015);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4068,'CREATINA','PROPIA',50000,2,1015);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4069,'ENERGIZANTE X 4 BARRAS','PROPIA',20000,2,1015);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4070,'PROTEINA+ PRO','PROPIA',80000,2,1015);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4071,'CAJA CON VARIEDAD DE DULCES','PROPIA',35000,2,1016);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4072,'PELUCHE DE CORAZON','PROPIA',40000,2,1016);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4073,'GLOBO CON CARTA','PROPIA',25000,2,1016);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4074,'ARREGLO FLORAL','PROPIA',50000,2,1016);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4075,'POLLO ASADO CON PAPAS','PROPIA',42000,1,1017);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4076,'ARROZ CON POLLO','PROPIA',24000,1,1017);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4077,'ALITAS BBQ','PROPIA',16000,1,1017);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4078,'PORCIO ARROZ','PROPIA',5000,1,1017);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4079,'SACAPUNTAELECTRICO','EAGLE',28800,4,1018);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4080,'PORTAFOLIO','PROPIA',33700,4,1018);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4081,'AGENDA ORGANIZADORA','BOOK',19800,4,1018);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4082,'CALCULADORA CIENTIFICA','CASIO',50400,4,1018);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4083,'Milky Way Snack Chocolate Y Caramelo','PROPIA',12300,2,1019);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4084,'M&Ms Caja','PROPIA',115200,2,1019);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4085,'EXTRA CHICLES','PROPIA',4700,2,1019);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4086,'Skittles Caramelos Confitado Sabor a Fruta','PROPIA',154800,2,1019);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4087,'PEINE PARA GATO','PROPIA',30000,2,1020);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4088,'GIMNASIO GATO','PROPIA',390000,2,1020);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4089,'COCAS PARA COMIDA','PROPIA',20000,2,1020);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4090,'DISPENSADOR DE AGUA','PROPIA',38000,2,1020);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4091,'RESMA DE PAPEL ','PROPIA',50000,2,1021);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4092,'TABLERO','PROPIA',10000,2,1021);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4093,'CAJA MARCADORES','PROPIA',25000,2,1021);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4094,'CUADERNO 7 MATERIAS','PROPIA',25000,2,1021);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4095,'HAMBURGUESA CON QUESO','PROPIA',22000,1,1022);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4096,'HAMBURGUESA CALLEJERA','PROPIA',25000,1,1022);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4097,'PAPA EN CASCOS PORCION PERSONAL','PROPIA',4500,1,1022);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4098,'MALTEADA','PROPIA',9000,1,1022);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4099,'PAQUETE BOMBAS','PROPIA',12000,2,1023);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4100,'PIÃ‘ATA PRINCESA','PROPIA',80000,2,1023);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4101,'LUCES DE NEON','PROPIA',100000,2,1023);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4102,'SERPENTINA','PROPIA',5000,2,1023);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4103,'PULPA FRUTA CONGELADA','PROPIA',10000,2,1024);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4104,'PAQUETE PAPA SABANERA','PROPIA',8000,2,1024);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4105,'PAQUETE VERDURA PICADA','PROPIA',3000,2,1024);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4106,'TOMATES','PROPIA',1000,2,1024);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4107,'BOWL DE POLLO','PROPIA',20000,1,1025);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4108,'BOWL DE SALMON','PROPIA',45000,1,1025);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4109,'ARROZ CHINO','PROPIA',15000,1,1025);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4110,'SOPA DE FIDEOS','PROPIA',8000,1,1025);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4111,'NACHOS','PROPIA',15000,1,1026);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4112,'TAPAS CON CARNE','PROPIA',24000,1,1026);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4113,'QUESADILLAS ESPECIALES','PROPIA',28000,1,1026);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4114,'ARROZ CON ESPECIAS','PROPIA',15000,1,1026);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4115,'ANILLO VIBRADOR','PROPIA',243000,2,1027);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4116,'VIBRADOR','PROPIA',768000,2,1027);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4117,'LUBRICANTE KY','PROPIA',15000,2,1027);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4118,'COPA MENTRUAL','PROPIA',69500,2,1027);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4119,'MATERA MEDIANA','PROPIA',22000,2,1028);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4120,'BOLSA TIERRA','PROPIA',8000,2,1028);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4121,'VITAMINA PLANTAS','PROPIA',10000,2,1028);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4122,'MATERA GRANDE','PROPIA',35000,2,1028);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4123,'ALMOHADA MATERNA','PROPIA',139000,2,1029);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4124,'CAMBIADOR ACOLCHADO','PROPIA',55900,2,1029);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4125,'ORGANIZADOR CARRO','PROPIA',55900,2,1029);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4126,'CARGADOR','PROPIA',179000,2,1029);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4127,'TOMATE X4','PROPIA',2500,3,1031);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4128,'LECHE','PROPIA',3500,3,1031);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4129,'AGUAX 24','PROPIA',12000,3,1031);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4130,'WISKEY','PROPIA',90000,3,1031);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4131,'NOOGETS','PROPIA',16000,1,1034);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4132,'POLLO BROSTER','PROPIA',45000,1,1034);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4133,'LIMONADA','PROPIA',6000,1,1034);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4134,'CAJITA FELIZ','PROPIA',25000,1,1034);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4135,'COMBO PERSONAL','PROPIA',25000,1,1035);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4136,'COMBO PARA DOS','PROPIA',40000,1,1035);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4137,'POLLO A LA NARANJA','PROPIA',6000,1,1035);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4138,'GASEOSA','PROPIA',2500,1,1035);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4139,'POLLO FRITO','PROPIA',40000,1,1036);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4140,'POLLO PARA HACER EN CASA','PROPIA',25000,1,1036);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4141,'CHATAS ESPECIAL','PROPIA',28000,1,1036);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4142,'PIERNA PERNIL','PROPIA',15000,1,1036);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4143,'SALMON EN SALSA DE CAMARON','PROPIA',40000,1,1037);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4144,'COCTEL DE CAMARON','PROPIA',30000,1,1037);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4145,'TRUCHA AL AJILLO','PROPIA',28000,1,1037);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4146,'SANCOCHO DE PESCADO','PROPIA',25000,1,1037);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4147,'PANTALON TERMICO','PROPIA',90000,2,1038);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4148,'BUZO AZUL','PROPIA',60000,2,1038);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4149,'CARDIGAN','PROPIA',78000,2,1038);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4150,'MAQUILLAJE TEMPORAL','PROPIA',25000,2,1038);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4151,'POSTRE DE MARACUYA','PROPIA',6000,1,1039);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4152,'FLAN DE LIMON','PROPIA',5000,1,1039);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4153,'CREPES DE NUTELLA CON BANANO','PROPIA',12000,1,1039);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4154,'COPA DE HELADO CON CHOCOLATE Y CHANTILLY','PROPIA',6000,1,1039);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4155,'PIERNAS DE POLLO CONGELADO 1 LB','PROPIA',12000,2,1040);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4156,'TOCINO 1 LB','PROPIA',18000,2,1040);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4157,'COSTILLA DE RES CONGELADA 1LB','PROPIA',20000,2,1040);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4158,'POLLO CAMPESINO CONGELADO PECHUGA','PROPIA',17000,2,1040);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4159,'SHAPOO EN SECO','PROPIA',18000,2,1041);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4160,'PESTAÃ‘INA','MAYBELINE',12000,2,1041);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4161,'POMMYS CARA','AVON',8000,2,1041);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4162,'LIMPIADOR CARA','YUYA',12000,2,1041);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4163,'CAJA DE CHOCOLATES','PROPIA',25000,1,1042);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4164,'TORTA DE CHOCOLATE PERSONAL','PROPIA',12000,1,1042);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4165,'FRESAS CON CHOCOLATE','PROPIA',7000,1,1042);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4166,'CHOCOLATES ESPECIALES','PROPIA',12000,1,1042);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4167,'LASAÃ‘A','PROPIA',24000,1,1043);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4168,'PASTA CON POLLO AL ALFREDO','PROPIA',24000,1,1043);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4169,'PASTA BOLOÃ‘ESA','PROPIA',24000,1,1043);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4170,'CHAMPIÃ‘ONES EN SALSA DE QUESO','PROPIA',18000,1,1043);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4171,'SNACKS PARA PERRO','AGILITY GOLD',4700,2,1044);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4172,'NIDOS PARA GATO','PROPIA',130000,2,1044);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4173,'CORREA RED','PROPIA',50900,2,1044);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4174,'PURINA FREE CHICKEN','PROPIA',58800,2,1044);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4175,'ACEITES PARA MASAJE','PROPIA',12000,2,1045);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4176,'DISFRAZ DOCTORA','PROPIA',90000,2,1045);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4177,'ESPOSAS  JUEGO','PROPIA',20000,2,1045);
+INSERT INTO productos (`id_Producto`,`Nombre`,`Marca`,`Precio`,`id_categoria`,`Id_store`) VALUES (4178,'LUBRICANTE','PROPIA',19000,2,1045);
+
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (101,'2022-09-01',6,4082,50400);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (102,'2022-09-01',95,4127,2500);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (103,'2022-09-01',88,4134,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (104,'2022-09-02',17,4130,90000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (105,'2022-09-02',45,4153,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (106,'2022-09-02',62,4020,15000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (107,'2022-09-02',15,4174,58800);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (108,'2022-09-03',85,4125,55900);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (109,'2022-09-03',91,4000,20000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (110,'2022-09-03',12,4079,28800);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (111,'2022-09-03',61,4072,40000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (112,'2022-09-04',98,4053,75000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (113,'2022-09-04',74,4073,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (114,'2022-09-04',52,4163,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (115,'2022-09-04',29,4035,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (116,'2022-09-05',55,4122,35000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (117,'2022-09-05',79,4007,14500);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (118,'2022-09-05',12,4166,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (119,'2022-09-05',22,4135,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (120,'2022-09-06',59,4076,24000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (121,'2022-09-06',54,4115,243000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (122,'2022-09-06',47,4173,50900);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (123,'2022-09-06',50,4147,90000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (124,'2022-09-07',52,4047,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (125,'2022-09-07',24,4016,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (126,'2022-09-07',34,4064,14000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (127,'2022-09-07',37,4155,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (128,'2022-09-08',30,4159,18000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (129,'2022-09-08',53,4085,4700);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (130,'2022-09-08',80,4162,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (131,'2022-09-08',89,4176,90000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (132,'2022-09-09',85,4066,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (133,'2022-09-09',30,4019,50000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (134,'2022-09-09',52,4142,15000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (135,'2022-09-09',95,4009,15000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (136,'2022-09-10',81,4101,100000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (137,'2022-09-10',55,4153,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (138,'2022-09-10',77,4094,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (139,'2022-09-10',26,4144,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (140,'2022-09-11',57,4134,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (141,'2022-09-11',8,4069,20000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (142,'2022-09-11',30,4087,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (143,'2022-09-11',69,4111,15000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (144,'2022-09-12',12,4111,15000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (145,'2022-09-12',81,4053,75000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (146,'2022-09-12',56,4102,5000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (147,'2022-09-12',63,4033,6000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (148,'2022-09-13',47,4014,70000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (149,'2022-09-13',44,4063,14500);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (150,'2022-09-13',14,4027,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (151,'2022-09-13',49,4049,27000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (152,'2022-09-14',94,4042,40000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (153,'2022-09-14',73,4118,69500);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (154,'2022-09-14',83,4067,120000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (155,'2022-09-14',44,4176,90000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (156,'2022-09-15',26,4045,3000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (157,'2022-09-15',24,4054,90000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (158,'2022-09-15',33,4174,58800);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (159,'2022-09-15',18,4021,185000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (160,'2022-09-16',80,4123,139000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (161,'2022-09-16',21,4010,60000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (162,'2022-09-16',60,4046,2500);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (163,'2022-09-16',41,4150,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (164,'2022-09-17',81,4142,15000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (165,'2022-09-17',32,4027,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (166,'2022-09-17',2,4129,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (167,'2022-09-17',41,4101,100000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (168,'2022-09-18',86,4123,139000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (169,'2022-09-18',40,4047,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (170,'2022-09-18',78,4174,58800);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (171,'2022-09-18',9,4095,22000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (172,'2022-09-19',81,4063,14500);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (173,'2022-09-19',46,4051,70000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (174,'2022-09-19',54,4127,2500);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (175,'2022-09-19',31,4061,15000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (176,'2022-09-20',19,4066,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (177,'2022-09-20',36,4120,8000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (178,'2022-09-20',31,4073,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (179,'2022-09-20',58,4091,50000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (180,'2022-09-21',11,4012,5000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (181,'2022-09-21',22,4071,35000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (182,'2022-09-21',55,4137,6000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (183,'2022-09-21',70,4174,58800);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (184,'2022-09-22',81,4116,768000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (185,'2022-09-22',48,4154,6000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (186,'2022-09-22',4,4107,20000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (187,'2022-09-22',40,4093,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (188,'2022-09-23',53,4053,75000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (189,'2022-09-23',99,4175,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (190,'2022-09-23',33,4019,50000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (191,'2022-09-23',94,4143,40000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (192,'2022-09-24',39,4175,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (193,'2022-09-24',41,4073,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (194,'2022-09-24',47,4159,18000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (195,'2022-09-24',1,4135,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (196,'2022-09-25',21,4163,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (197,'2022-09-25',27,4162,12000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (198,'2022-09-25',60,4135,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (199,'2022-09-25',21,4029,10000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (200,'2022-09-26',2,4055,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (201,'2022-09-26',47,4071,35000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (202,'2022-09-26',8,4074,50000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (203,'2022-09-26',3,4107,20000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (204,'2022-09-27',13,4017,8000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (205,'2022-09-27',77,4074,50000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (206,'2022-09-27',69,4043,500);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (207,'2022-09-27',11,4072,40000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (208,'2022-09-28',67,4150,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (209,'2022-09-28',51,4163,25000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (210,'2022-09-28',56,4107,20000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (211,'2022-09-28',30,4165,7000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (212,'2022-09-29',43,4036,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (213,'2022-09-29',80,4013,30000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (214,'2022-09-29',93,4077,16000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (215,'2022-09-29',81,4011,115000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (216,'2022-09-30',67,4122,35000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (217,'2022-09-30',7,4038,80900);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (218,'2022-09-30',47,4029,10000);
+INSERT INTO Ventas (`id_Venta`,`Fecha_venta`,`id_clientes`,`id_producto`,`valor_a_pagar`) VALUES (219,'2022-09-30',84,4174,58800);
+
+
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2001,101,5040.00,9576.00,35784);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2002,102,250.00,475.00,1775);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2003,103,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2004,104,9000.00,17100.00,63900);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2005,105,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2006,106,1500.00,2850.00,10650);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2007,107,5880.00,11172.00,41748);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2008,108,5590.00,10621.00,39689);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2009,109,2000.00,3800.00,14200);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2010,110,2880.00,5472.00,20448);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2011,111,4000.00,7600.00,28400);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2012,112,7500.00,14250.00,53250);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2013,113,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2014,114,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2015,115,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2016,116,3500.00,6650.00,24850);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2017,117,1450.00,2755.00,10295);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2018,118,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2019,119,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2020,120,2400.00,4560.00,17040);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2021,121,24300.00,46170.00,172530);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2022,122,5090.00,9671.00,36139);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2023,123,9000.00,17100.00,63900);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2024,124,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2025,125,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2026,126,1400.00,2660.00,9940);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2027,127,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2028,128,1800.00,3420.00,12780);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2029,129,470.00,893.00,3337);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2030,130,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2031,131,9000.00,17100.00,63900);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2032,132,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2033,133,5000.00,9500.00,35500);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2034,134,1500.00,2850.00,10650);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2035,135,1500.00,2850.00,10650);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2036,136,10000.00,19000.00,71000);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2037,137,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2038,138,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2039,139,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2040,140,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2041,141,2000.00,3800.00,14200);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2042,142,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2043,143,1500.00,2850.00,10650);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2044,144,1500.00,2850.00,10650);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2045,145,7500.00,14250.00,53250);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2046,146,500.00,950.00,3550);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2047,147,600.00,1140.00,4260);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2048,148,7000.00,13300.00,49700);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2049,149,1450.00,2755.00,10295);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2050,150,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2051,151,2700.00,5130.00,19170);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2052,152,4000.00,7600.00,28400);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2053,153,6950.00,13205.00,49345);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2054,154,12000.00,22800.00,85200);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2055,155,9000.00,17100.00,63900);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2056,156,300.00,570.00,2130);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2057,157,9000.00,17100.00,63900);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2058,158,5880.00,11172.00,41748);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2059,159,18500.00,35150.00,131350);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2060,160,13900.00,26410.00,98690);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2061,161,6000.00,11400.00,42600);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2062,162,250.00,475.00,1775);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2063,163,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2064,164,1500.00,2850.00,10650);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2065,165,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2066,166,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2067,167,10000.00,19000.00,71000);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2068,168,13900.00,26410.00,98690);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2069,169,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2070,170,5880.00,11172.00,41748);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2071,171,2200.00,4180.00,15620);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2072,172,1450.00,2755.00,10295);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2073,173,7000.00,13300.00,49700);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2074,174,250.00,475.00,1775);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2075,175,1500.00,2850.00,10650);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2076,176,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2077,177,800.00,1520.00,5680);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2078,178,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2079,179,5000.00,9500.00,35500);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2080,180,500.00,950.00,3550);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2081,181,3500.00,6650.00,24850);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2082,182,600.00,1140.00,4260);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2083,183,5880.00,11172.00,41748);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2084,184,76800.00,145920.00,545280);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2085,185,600.00,1140.00,4260);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2086,186,2000.00,3800.00,14200);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2087,187,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2088,188,7500.00,14250.00,53250);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2089,189,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2090,190,5000.00,9500.00,35500);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2091,191,4000.00,7600.00,28400);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2092,192,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2093,193,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2094,194,1800.00,3420.00,12780);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2095,195,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2096,196,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2097,197,1200.00,2280.00,8520);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2098,198,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2099,199,1000.00,1900.00,7100);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2100,200,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2101,201,3500.00,6650.00,24850);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2102,202,5000.00,9500.00,35500);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2103,203,2000.00,3800.00,14200);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2104,204,800.00,1520.00,5680);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2105,205,5000.00,9500.00,35500);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2106,206,50.00,95.00,355);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2107,207,4000.00,7600.00,28400);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2108,208,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2109,209,2500.00,4750.00,17750);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2110,210,2000.00,3800.00,14200);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2111,211,700.00,1330.00,4970);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2112,212,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2113,213,3000.00,5700.00,21300);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2114,214,1600.00,3040.00,11360);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2115,215,11500.00,21850.00,81650);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2116,216,3500.00,6650.00,24850);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2117,217,8090.00,15371.00,57439);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2118,218,1000.00,1900.00,7100);
+INSERT INTO matriz_ventas (`id_VentaXProducto`,`id_venta`,`Comisión`,`Impuestos`,`valor_a_transferir_aliado`) VALUES (2119,219,5880.00,11172.00,41748);
+
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1001,'5086603014','9938543875',2001,35784);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1002,'5086603014','9938542518',2002,1775);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1003,'5086603014','9938548865',2003,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1004,'5086603014','9938536993',2004,63900);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1005,'5086603014','9938536986',2005,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1006,'5086603014','9938539232',2006,10650);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1007,'5086603014','9938546563',2007,41748);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1008,'5086603014','9938537974',2008,39689);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1009,'5086603014','9938543026',2009,14200);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1010,'5086603014','9938542776',2010,20448);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1011,'5086603014','9938548557',2011,28400);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1012,'5086603014','9938537974',2012,53250);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1013,'5086603014','9938536963',2013,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1014,'5086603014','9938548616',2014,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1015,'5086603014','9938536911',2015,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1016,'5086603014','9938534903',2016,24850);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1017,'5086603014','9938539116',2017,10295);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1018,'5086603014','9938529777',2018,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1019,'5086603014','9938536980',2019,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1020,'5086603014','9938539105',2020,17040);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1021,'5086603014','9938536963',2021,172530);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1022,'5086603014','9938535224',2022,36139);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1023,'5086603014','9938532150',2023,63900);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1024,'5086603014','9938546764',2024,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1025,'5086603014','9938535242',2025,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1026,'5086603014','9938548618',2026,9940);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1027,'5086603014','9938538639',2027,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1028,'5086603014','9938550463',2028,12780);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1029,'5086603014','9938538568',2029,3337);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1030,'5086603014','9938548556',2030,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1031,'5086603014','9938536905',2031,63900);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1032,'5086603014','9938546564',2032,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1033,'5086603014','9938535457',2033,35500);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1034,'5086603014','9938536365',2034,10650);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1035,'5086603014','9938551085',2035,10650);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1036,'5086603014','9938556856',2036,71000);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1037,'5086603014','9938551186',2037,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1038,'5086603014','9938556854',2038,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1039,'5086603014','9938551113',2039,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1040,'5086603014','9938552079',2040,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1041,'5086603014','9938553259',2041,14200);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1042,'5086603014','9938557578',2042,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1043,'5086603014','9938556855',2043,10650);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1044,'5086603014','9938557615',2044,10650);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1045,'5086603014','9938553893',2045,53250);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1046,'5086603014','9938560326',2046,3550);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1047,'5086603014','9938551113',2047,4260);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1048,'5086603014','9938557616',2048,49700);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1049,'5086603014','9938551084',2049,10295);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1050,'5086603014','9938552379',2050,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1051,'5086603014','9938551186',2051,19170);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1052,'5086603014','9938553022',2052,28400);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1053,'5086603014','9938552471',2053,49345);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1054,'5086603014','9938555225',2054,85200);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1055,'5086603014','9938557575',2055,63900);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1056,'5086603014','9938563444',2056,2130);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1057,'5086603014','9938550863',2057,63900);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1058,'5086603014','9938552180',2058,41748);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1059,'5086603014','9938559011',2059,131350);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1060,'5086603014','9938558783',2060,98690);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1061,'5086603014','9938551449',2061,42600);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1062,'5086603014','9938550463',2062,1775);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1063,'5086603014','9938563445',2063,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1064,'5086603014','9938557580',2064,10650);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1065,'5086603014','9938557162',2065,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1066,'5086603014','9938552294',2066,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1067,'5086603014','9938562955',2067,71000);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1068,'5086603014','9938552376',2068,98690);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1069,'5086603014','9938566396',2069,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1070,'5086603014','9938555272',2070,41748);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1071,'5086603014','9938557679',2071,15620);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1072,'5086603014','9938550921',2072,10295);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1073,'5086603014','9938557613',2073,49700);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1074,'5086603014','9938557803',2074,1775);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1075,'5086603014','9938562955',2075,10650);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1076,'5086603014','9938562395',2076,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1077,'5086603014','9938558663',2077,5680);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1078,'5086603014','9938558486',2078,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1079,'5086603014','9938551083',2079,35500);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1080,'5086603014','9938558781',2080,3550);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1081,'5086603014','9938548616',2081,24850);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1082,'5086603014','9938562255',2082,4260);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1083,'5086603014','9938557804',2083,41748);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1084,'5086603014','9938552180',2084,545280);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1085,'5086603014','9938562350',2085,4260);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1086,'5086603014','9938553789',2086,14200);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1087,'5086603014','9938562411',2087,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1088,'5086603014','9938562145',2088,53250);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1089,'5086603014','9938566361',2089,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1090,'5086603014','9938586383',2090,35500);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1091,'5086603014','9938584456',2091,28400);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1092,'5086603014','9938582520',2092,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1093,'5086603014','9938584225',2093,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1094,'5086603014','9938586095',2094,12780);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1095,'5086603014','9938578459',2095,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1096,'5086603014','9938580855',2096,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1097,'5086603014','9938589807',2097,8520);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1098,'5086603014','9938583315',2098,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1099,'5086603014','9938580124',2099,7100);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1100,'5086603014','9938583099',2100,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1101,'5086603014','9938583968',2101,24850);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1102,'5086603014','9938588042',2102,35500);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1103,'5086603014','9938585166',2103,14200);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1104,'5086603014','9938581572',2104,5680);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1105,'5086603014','9938578288',2105,35500);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1106,'5086603014','9938588494',2106,355);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1107,'5086603014','9938582973',2107,28400);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1108,'5086603014','9938586619',2108,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1109,'5086603014','9938582454',2109,17750);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1110,'5086603014','9938582843',2110,14200);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1111,'5086603014','9938589882',2111,4970);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1112,'5086603014','9938581776',2112,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1113,'5086603014','9938581663',2113,21300);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1114,'5086603014','9938583614',2114,11360);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1115,'5086603014','9938581481',2115,81650);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1116,'5086603014','9938580822',2116,24850);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1117,'5086603014','9938577973',2117,57439);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1118,'5086603014','9938586771',2118,7100);
+INSERT INTO matriz_pagos (`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_VentaXProducto`,`valor_a_transferir_aliado`) VALUES (1119,'5086603014','9938589980',2119,41748);
+
+
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (2,2001,'SCOTIABANK','2022-09-01',3,50400.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (3,2002,'SCOTIABANK','2022-09-02',4,2500.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (4,2003,'SCOTIABANK','2022-09-02',3,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (5,2004,'SCOTIABANK','2022-09-03',1,90000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (6,2005,'SCOTIABANK','2022-09-03',1,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (7,2006,'SCOTIABANK','2022-09-04',2,15000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (8,2007,'SCOTIABANK','2022-09-04',4,58800.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (9,2008,'SCOTIABANK','2022-09-05',3,55900.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (10,2009,'SCOTIABANK','2022-09-05',3,20000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (11,2010,'SCOTIABANK','2022-09-05',2,28800.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (12,2011,'SCOTIABANK','2022-09-06',1,40000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (13,2012,'SCOTIABANK','2022-09-06',3,75000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (14,2013,'SCOTIABANK','2022-09-07',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (15,2014,'SCOTIABANK','2022-09-07',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (16,2015,'SCOTIABANK','2022-09-07',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (17,2016,'SCOTIABANK','2022-09-08',1,35000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (18,2017,'SCOTIABANK','2022-09-08',2,14500.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (19,2018,'SCOTIABANK','2022-09-08',4,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (20,2019,'SCOTIABANK','2022-09-09',3,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (21,2020,'SCOTIABANK','2022-09-09',4,24000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (22,2021,'SCOTIABANK','2022-09-09',3,243000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (23,2022,'SCOTIABANK','2022-09-09',3,50900.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (24,2023,'SCOTIABANK','2022-09-10',4,90000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (25,2024,'SCOTIABANK','2022-09-10',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (26,2025,'SCOTIABANK','2022-09-10',4,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (27,2026,'SCOTIABANK','2022-09-10',4,14000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (28,2027,'SCOTIABANK','2022-09-11',4,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (29,2028,'SCOTIABANK','2022-09-11',4,18000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (30,2029,'SCOTIABANK','2022-09-11',1,4700.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (31,2030,'SCOTIABANK','2022-09-12',4,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (32,2031,'SCOTIABANK','2022-09-12',2,90000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (33,2032,'SCOTIABANK','2022-09-12',4,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (34,2033,'SCOTIABANK','2022-09-13',3,50000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (35,2034,'SCOTIABANK','2022-09-13',2,15000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (36,2035,'SCOTIABANK','2022-09-13',4,15000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (37,2036,'SCOTIABANK','2022-09-13',3,100000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (38,2037,'SCOTIABANK','2022-09-13',2,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (39,2038,'SCOTIABANK','2022-09-13',2,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (40,2039,'SCOTIABANK','2022-09-13',1,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (41,2040,'SCOTIABANK','2022-09-14',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (42,2041,'SCOTIABANK','2022-09-14',3,20000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (43,2042,'SCOTIABANK','2022-09-14',3,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (44,2043,'SCOTIABANK','2022-09-14',2,15000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (45,2044,'SCOTIABANK','2022-09-14',3,15000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (46,2045,'SCOTIABANK','2022-09-14',1,75000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (47,2046,'SCOTIABANK','2022-09-14',4,5000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (48,2047,'SCOTIABANK','2022-09-15',4,6000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (49,2048,'SCOTIABANK','2022-09-15',1,70000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (50,2049,'SCOTIABANK','2022-09-15',2,14500.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (51,2050,'SCOTIABANK','2022-09-15',1,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (52,2051,'SCOTIABANK','2022-09-15',2,27000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (53,2052,'SCOTIABANK','2022-09-15',3,40000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (54,2053,'SCOTIABANK','2022-09-16',3,69500.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (55,2054,'SCOTIABANK','2022-09-16',2,120000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (56,2055,'SCOTIABANK','2022-09-16',2,90000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (57,2056,'SCOTIABANK','2022-09-16',3,3000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (58,2057,'SCOTIABANK','2022-09-16',3,90000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (59,2058,'SCOTIABANK','2022-09-16',1,58800.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (60,2059,'SCOTIABANK','2022-09-17',4,185000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (61,2060,'SCOTIABANK','2022-09-17',3,139000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (62,2061,'SCOTIABANK','2022-09-17',1,60000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (63,2062,'SCOTIABANK','2022-09-18',2,2500.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (64,2063,'SCOTIABANK','2022-09-18',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (65,2064,'SCOTIABANK','2022-09-19',3,15000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (66,2065,'SCOTIABANK','2022-09-19',4,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (67,2066,'SCOTIABANK','2022-09-19',1,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (68,2067,'SCOTIABANK','2022-09-19',4,100000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (69,2068,'SCOTIABANK','2022-09-20',1,139000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (70,2069,'SCOTIABANK','2022-09-20',1,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (71,2070,'SCOTIABANK','2022-09-20',2,58800.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (72,2071,'SCOTIABANK','2022-09-21',4,22000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (73,2072,'SCOTIABANK','2022-09-21',2,14500.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (74,2073,'SCOTIABANK','2022-09-21',3,70000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (75,2074,'SCOTIABANK','2022-09-21',1,2500.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (76,2075,'SCOTIABANK','2022-09-21',2,15000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (77,2076,'SCOTIABANK','2022-09-21',2,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (78,2077,'SCOTIABANK','2022-09-22',3,8000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (79,2078,'SCOTIABANK','2022-09-22',3,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (80,2079,'SCOTIABANK','2022-09-22',1,50000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (81,2080,'SCOTIABANK','2022-09-23',4,5000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (82,2081,'SCOTIABANK','2022-09-23',2,35000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (83,2082,'SCOTIABANK','2022-09-23',4,6000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (84,2083,'SCOTIABANK','2022-09-24',1,58800.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (85,2084,'SCOTIABANK','2022-09-24',2,768000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (86,2085,'SCOTIABANK','2022-09-25',1,6000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (87,2086,'SCOTIABANK','2022-09-25',2,20000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (88,2087,'SCOTIABANK','2022-09-26',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (89,2088,'SCOTIABANK','2022-09-26',3,75000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (90,2089,'SCOTIABANK','2022-09-26',2,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (91,2090,'SCOTIABANK','2022-09-26',4,50000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (92,2091,'SCOTIABANK','2022-09-27',3,40000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (93,2092,'SCOTIABANK','2022-09-27',1,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (94,2093,'SCOTIABANK','2022-09-27',3,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (95,2094,'SCOTIABANK','2022-09-28',4,18000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (96,2095,'SCOTIABANK','2022-09-28',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (97,2096,'SCOTIABANK','2022-09-28',3,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (98,2097,'SCOTIABANK','2022-09-28',2,12000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (99,2098,'SCOTIABANK','2022-09-28',2,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (100,2099,'SCOTIABANK','2022-09-28',2,10000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (101,2100,'SCOTIABANK','2022-09-28',1,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (102,2101,'SCOTIABANK','2022-09-28',2,35000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (103,2102,'SCOTIABANK','2022-09-28',4,50000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (104,2103,'SCOTIABANK','2022-09-28',2,20000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (105,2104,'SCOTIABANK','2022-09-28',4,8000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (106,2105,'SCOTIABANK','2022-09-28',3,50000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (107,2106,'SCOTIABANK','2022-09-28',2,500.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (108,2107,'SCOTIABANK','2022-09-28',2,40000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (109,2108,'SCOTIABANK','2022-09-28',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (110,2109,'SCOTIABANK','2022-09-29',4,25000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (111,2110,'SCOTIABANK','2022-09-29',2,20000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (112,2111,'SCOTIABANK','2022-09-29',2,7000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (113,2112,'SCOTIABANK','2022-09-29',1,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (114,2113,'SCOTIABANK','2022-09-29',4,30000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (115,2114,'SCOTIABANK','2022-09-30',2,16000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (116,2115,'SCOTIABANK','2022-09-30',2,115000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (117,2116,'SCOTIABANK','2022-09-30',1,35000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (118,2117,'SCOTIABANK','2022-09-30',3,80900.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (119,2118,'SCOTIABANK','2022-09-30',1,10000.00,'PAYMENT');
+INSERT INTO eventos (`id_evento`,`id_VentaXProducto`,`Gateway`,`Update_at`,`Status`,`Valor_a_pagar`,`Event_type`) VALUES (120,2119,'SCOTIABANK','2022-09-30',1,58800.00,'PAYMENT');
+
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (2,1001,'5086603014','9938543875','59976045216',35784.00,44957461.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (3,1002,'5086603014','9938542518','1571064461',1775.00,44955686.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (4,1003,'5086603014','9938548865','198175226',17750.00,44937936.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (5,1004,'5086603014','9938536993','1571064461',63900.00,44874036.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (6,1005,'5086603014','9938536986','7600722388',8520.00,44865516.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (7,1006,'5086603014','9938539232','81121246',10650.00,44854866.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (8,1007,'5086603014','9938546563','1551330491',41748.00,44813118.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (9,1008,'5086603014','9938537974','600002199',39689.00,44773429.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (10,1009,'5086603014','9938543026','57650354801',14200.00,44759229.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (11,1010,'5086603014','9938542776','59976045216',20448.00,44738781.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (12,1011,'5086603014','9938548557','144017506',28400.00,44710381.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (13,1012,'5086603014','9938537974','191125616',53250.00,44657131.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (14,1013,'5086603014','9938536963','144017506',17750.00,44639381.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (15,1014,'5086603014','9938548616','82000003178',17750.00,44621631.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (16,1015,'5086603014','9938536911','21000056466',17750.00,44603881.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (17,1016,'5086603014','9938534903','28065410879',24850.00,44579031.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (18,1017,'5086603014','9938539116','57650354801',10295.00,44568736.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (19,1018,'5086603014','9938529777','82000003178',8520.00,44560216.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (20,1019,'5086603014','9938536980','91205668671',17750.00,44542466.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (21,1020,'5086603014','9938539105','17400070792',17040.00,44525426.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (22,1021,'5086603014','9938536963','570000001',172530.00,44352896.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (23,1022,'5086603014','9938535224','1551330491',36139.00,44316757.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (24,1023,'5086603014','9938532150','81577718679',63900.00,44252857.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (25,1024,'5086603014','9938546764','91211740774',17750.00,44235107.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (26,1025,'5086603014','9938535242','1935948716',8520.00,44226587.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (27,1026,'5086603014','9938548618','4580000',9940.00,44216647.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (28,1027,'5086603014','9938538639','825648950',8520.00,44208127.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (29,1028,'5086603014','9938550463','6965594408',12780.00,44195347.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (30,1029,'5086603014','9938538568','90757676337',3337.00,44192010.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (31,1030,'5086603014','9938548556','6965594408',8520.00,44183490.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (32,1031,'5086603014','9938536905','26169996951',63900.00,44119590.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (33,1032,'5086603014','9938546564','4580000',21300.00,44098290.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (34,1033,'5086603014','9938535457','81121246',35500.00,44062790.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (35,1034,'5086603014','9938536365','593143708',10650.00,44052140.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (36,1035,'5086603014','9938551085','57650354801',10650.00,44041490.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (37,1036,'5086603014','9938556856','700005496',71000.00,43970490.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (38,1037,'5086603014','9938551186','7600722388',8520.00,43961970.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (39,1038,'5086603014','9938556854','136466562',17750.00,43944220.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (40,1039,'5086603014','9938551113','23100001113',21300.00,43922920.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (41,1040,'5086603014','9938552079','198175226',17750.00,43905170.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (42,1041,'5086603014','9938553259','37500013126',14200.00,43890970.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (43,1042,'5086603014','9938557578','47720800434',21300.00,43869670.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (44,1043,'5086603014','9938556855','75003927849',10650.00,43859020.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (45,1044,'5086603014','9938557615','75003927849',10650.00,43848370.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (46,1045,'5086603014','9938553893','191125616',53250.00,43795120.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (47,1046,'5086603014','9938560326','700005496',3550.00,43791570.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (48,1047,'5086603014','9938551113','4522014658',4260.00,43787310.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (49,1048,'5086603014','9938557616','60973538597',49700.00,43737610.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (50,1049,'5086603014','9938551084','4580000',10295.00,43727315.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (51,1050,'5086603014','9938552379','80322811750',21300.00,43706015.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (52,1051,'5086603014','9938551186','91211740774',19170.00,43686845.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (53,1052,'5086603014','9938553022','5459523601',28400.00,43658445.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (54,1053,'5086603014','9938552471','570000001',49345.00,43609100.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (55,1054,'5086603014','9938555225','37500013126',85200.00,43523900.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (56,1055,'5086603014','9938557575','26169996951',63900.00,43460000.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (57,1056,'5086603014','9938563444','6244974412',2130.00,43457870.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (58,1057,'5086603014','9938550863','191125616',63900.00,43393970.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (59,1058,'5086603014','9938552180','1551330491',41748.00,43352222.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (60,1059,'5086603014','9938559011','81121246',131350.00,43220872.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (61,1060,'5086603014','9938558783','600002199',98690.00,43122182.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (62,1061,'5086603014','9938551449','60973538597',42600.00,43079582.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (63,1062,'5086603014','9938550463','6244974412',1775.00,43077807.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (64,1063,'5086603014','9938563445','81577718679',17750.00,43060057.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (65,1064,'5086603014','9938557580','593143708',10650.00,43049407.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (66,1065,'5086603014','9938557162','80322811750',21300.00,43028107.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (67,1066,'5086603014','9938552294','1571064461',8520.00,43019587.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (68,1067,'5086603014','9938562955','700005496',71000.00,42948587.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (69,1068,'5086603014','9938552376','600002199',98690.00,42849897.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (70,1069,'5086603014','9938566396','91211740774',17750.00,42832147.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (71,1070,'5086603014','9938555272','1551330491',41748.00,42790399.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (72,1071,'5086603014','9938557679','24072239126',15620.00,42774779.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (73,1072,'5086603014','9938550921','4580000',10295.00,42764484.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (74,1073,'5086603014','9938557613','191125616',49700.00,42714784.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (75,1074,'5086603014','9938557803','1571064461',1775.00,42713009.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (76,1075,'5086603014','9938562955','18000069270',10650.00,42702359.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (77,1076,'5086603014','9938562395','4580000',21300.00,42681059.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (78,1077,'5086603014','9938558663','28065410879',5680.00,42675379.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (79,1078,'5086603014','9938558486','144017506',17750.00,42657629.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (80,1079,'5086603014','9938551083','136466562',35500.00,42622129.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (81,1080,'5086603014','9938558781','60973538597',3550.00,42618579.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (82,1081,'5086603014','9938548616','144017506',24850.00,42593729.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (83,1082,'5086603014','9938562255','91205668671',4260.00,42589469.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (84,1083,'5086603014','9938557804','1551330491',41748.00,42547721.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (85,1084,'5086603014','9938552180','570000001',545280.00,42002441.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (86,1085,'5086603014','9938562350','7600722388',4260.00,41998181.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (87,1086,'5086603014','9938553789','23300000314',14200.00,41983981.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (88,1087,'5086603014','9938562411','136466562',17750.00,41966231.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (89,1088,'5086603014','9938562145','191125616',53250.00,41912981.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (90,1089,'5086603014','9938566361','26169996951',8520.00,41904461.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (91,1090,'5086603014','9938586383','81121246',35500.00,41868961.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (92,1091,'5086603014','9938584456','23100001113',28400.00,41840561.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (93,1092,'5086603014','9938582520','26169996951',8520.00,41832041.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (94,1093,'5086603014','9938584225','144017506',17750.00,41814291.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (95,1094,'5086603014','9938586095','6965594408',12780.00,41801511.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (96,1095,'5086603014','9938578459','91205668671',17750.00,41783761.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (97,1096,'5086603014','9938580855','82000003178',17750.00,41766011.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (98,1097,'5086603014','9938589807','6965594408',8520.00,41757491.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (99,1098,'5086603014','9938583315','91205668671',17750.00,41739741.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (100,1099,'5086603014','9938580124','80322811750',7100.00,41732641.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (101,1100,'5086603014','9938583099','22575482646',21300.00,41711341.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (102,1101,'5086603014','9938583968','144017506',24850.00,41686491.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (103,1102,'5086603014','9938588042','144017506',35500.00,41650991.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (104,1103,'5086603014','9938585166','23300000314',14200.00,41636791.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (105,1104,'5086603014','9938581572','1935948716',5680.00,41631111.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (106,1105,'5086603014','9938578288','144017506',35500.00,41595611.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (107,1106,'5086603014','9938588494','6244974412',355.00,41595256.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (108,1107,'5086603014','9938582973','144017506',28400.00,41566856.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (109,1108,'5086603014','9938586619','81577718679',17750.00,41549106.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (110,1109,'5086603014','9938582454','82000003178',17750.00,41531356.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (111,1110,'5086603014','9938582843','23300000314',14200.00,41517156.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (112,1111,'5086603014','9938589882','82000003178',4970.00,41512186.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (113,1112,'5086603014','9938581776','21000056466',21300.00,41490886.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (114,1113,'5086603014','9938581663','60973538597',21300.00,41469586.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (115,1114,'5086603014','9938583614','17400070792',11360.00,41458226.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (116,1115,'5086603014','9938581481','60973538597',81650.00,41376576.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (117,1116,'5086603014','9938580822','28065410879',24850.00,41351726.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (118,1117,'5086603014','9938577973','21000056466',57439.00,41294287.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (119,1118,'5086603014','9938586771','80322811750',7100.00,41287187.49);
+INSERT INTO extracto (`id_movimiento`,`id_pago`,`Cuenta_pago`,`Bank_reference`,`id_cuenta_banc`,`Valor_a_pagar`,`Saldo`) VALUES (120,1119,'5086603014','9938589980','1551330491',41748.00,41245439.49);
+
+
+-- VISTAS --
+
+use proyecto_final;
+
+-- 1.
+create view ventasxproducto as 
+select id_producto, sum(valor_a_pagar) as Valor_a_pagar from ventas group by id_producto order by id_producto asc ;
+
+select * from ventasxproducto;
+
+-- 2.
+CREATE OR REPLACE VIEW ventasxproductoxaliado as
+select T1.id_producto,T2.Valor_a_pagar,T1.nombre,T1.id_store,T3.Nombre_store from productos T1
+inner join ventasxproducto T2
+inner join aliados T3
+on T1.id_producto=T2.id_producto and T1.id_store=T3.id_store;
+
+select * from ventasxproductoxaliado;
+
+-- 3. 
+CREATE OR REPLACE VIEW  ProductosxCategoria as
+select id_store, Nombre_store,id_categoria from aliados where id_categoria = 1;
+
+select * from productosxcategoria;
+
+-- 4.
+CREATE OR REPLACE VIEW ClientesXVentas as
+select T1.id_venta, T2.valor_a_transferir_aliado,T3.Holder_name from ventas T1
+inner join matriz_ventas T2
+inner join clientes_usuarios T3 on
+T1.id_Venta=T2.id_venta and T1.id_clientes=T3.id_Clientes;
+
+select *from ClientesXVentas;
+-- 5 
+
+CREATE OR REPLACE VIEW ProductosXaliado
+AS SELECT id_store , count(id_producto) AS 'total_produtos' FROM productos 
+GROUP BY id_store;
+
+select * from ProductosXaliado;
+
+-- FUNCIONES--
+-- 1. 
+DELIMITER //
+create function promedio(id_cl float) returns float
+deterministic
+begin
+   declare respuesta float;
+   If id_cl = 0 Then
+   set respuesta= 'Ingrese numero mayor a 0';
+   else 
+   set respuesta= (select avg(valor_a_pagar) from ventas where id_cl=id_clientes);
+   end if;
+   return respuesta;
+   end
+   //
+    
+select promedio (8);
+
+-- 2. 
+DELIMITER //
+create function Ventasxclientes(id int) returns float
+deterministic
+begin
+   declare respuesta float;
+   set respuesta = (select count(id_venta) from ventas where id=id_Clientes)  ;
+   return respuesta;
+   end
+   //
+   
+select ventasxclientes (12);
+
+-- STORED PROCEDURES--
+
+-- 1. Con este proceso almacenado se podrá revisar si ya estan creados los aliados y si no estan hacer el registro en la tabla.
+
+DELIMITER //
+create procedure INS_ALI(Nom_str VARCHAR(80),
+id_cnt_banc VARCHAR(80),
+Dire VARCHAR(80),
+Tel VARCHAR(80),
+id_cat INT)
+begin 
+    DECLARE existe_aliado INT;
+    DECLARE id INT;
+    set existe_aliado = (select count(*) from aliados where Nom_str=Nombre_store);
+    if existe_aliado=0 then 
+          insert into aliados(Nombre_store,id_cuenta_banc,Dirección,Telefono,id_categoria)
+          values(Nom_str,id_cnt_banc,Dire,Tel,id_cat);
+		  set id=last_insert_id();
+	else set id='0'; 
+	end if ;
+    select id;
+end 
+//
+
+CALL INS_ALI('Itanos','57641254981','Calle 9 72-34','6013459010',1);
+
+-- 2. 
+/* Con este SP se podra ordenar la tabla ventas por cada una de las diferentes columnas que la componen*/
+
+DELIMITER $$
+CREATE PROCEDURE sp_order_ventas (IN v_ventas VARCHAR(100))
+BEGIN
+	IF v_ventas != '' THEN
+		SET @ventas_order = CONCAT(' ORDER BY ' , v_ventas);
+	ELSE
+		SET @ventas_order = '';
+	END IF;
+    SET @clausula_ventas = CONCAT('SELECT * FROM ventas', @ventas_order);
+    
+    PREPARE runSQL FROM @clausula_ventas;
+    EXECUTE runSQL;
+    DEALLOCATE PREPARE runSQL;
+    
+END $$
+DELIMITER ;
+
+select * FROM ventas ORDER BY id_clientes;
+CALL sp_order_ventas('id_clientes');
+CALL sp_order_ventas('valor_a_pagar');
+CALL sp_order_ventas('id_producto');
+
+
+/* Con este SP se podra ordenar cualquier tabla de manera ascedente o descendente según 3 parametros que se le indiquen*/
+
+DROP PROCEDURE IF EXISTS sp_order_tablas;
+
+DELIMITER $$
+CREATE PROCEDURE sp_order_tablas( IN campo VARCHAR(255) , IN type_order ENUM('ASC' ,'DESC',''), IN tabla VARCHAR(200) )
+BEGIN
+    
+    IF campo != '' THEN
+		SET @orden = CONCAT(' ORDER BY ' , campo);
+	ELSE
+		SET @orden = '';
+	END IF;
+    
+    IF type_order != '' THEN
+		SET @tipo = CONCAT(' ' , type_order); -- ' DESC'
+	ELSE
+		SET @tipo = '';
+	END IF;
+    
+    SET @clausula_tabla = CONCAT('SELECT * FROM ', tabla ,@orden,@tipo);
+    
+    PREPARE runSQL FROM @clausula_tabla;
+    EXECUTE runSQL;
+    DEALLOCATE PREPARE runSQL;
+    
+END $$
+DELIMITER ;
+
+select * from productos ORDER BY NOMBRE desc;
+CALL sp_order_tablas('Nombre' ,'DESC', 'productos');
+
+CALL sp_order_tablas('Nombre_store' ,'DESC', 'aliados');
+
+CALL sp_order_tablas('edad' ,'', 'clientes_usuarios');
+
+
+/*TRIGGERS*/
+
+/*Tabla espejo de tabla_aliados*/
+
+CREATE TABLE IF NOT EXISTS aliados_back_up (
+  id_Store INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Nombre_store VARCHAR(80) NOT NULL,
+  id_cuenta_banc VARCHAR(80) NOT NULL,
+  Dirección VARCHAR(80) NOT NULL,
+  Telefono VARCHAR(25) NOT NULL,
+  id_categoria INT NOT NULL,
+  foreign key (id_categoria) references Categoria(id_categoria));
+  
+  /*Aplico AFTER e INSERT*/
+
+CREATE TRIGGER back_up_tabla_aliados
+AFTER INSERT ON aliados 
+FOR EACH ROW 
+INSERT INTO aliados_back_up(id_Store,Nombre_store,id_cuenta_banc,Dirección,Telefono,id_categoria)
+VALUES(NEW.id_Store,NEW.Nombre_store,NEW.id_cuenta_banc,NEW.Dirección,NEW.Telefono,NEW.id_categoria);
+
+/*Probamos el trigger de tabla espejo en ALIADOS */
+
+INSERT INTO aliados(Nombre_store,id_cuenta_banc,Dirección,Telefono,id_categoria) VALUES('FDS','865214597','DirPrueba','3205563698','2');
+
+SELECT * FROM aliados;
+SELECT * FROM aliados_back_up;
+DELETE FROM aliados WHERE id_Store='1048';
+DELETE FROM aliados_back_up WHERE id_Store='1048';
+
+
+/*Tabla espejo de Ventas
+Aplico AFTER e INSERT*/
+
+CREATE TABLE IF NOT EXISTS Ventas_back_up(
+  id_Venta INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Fecha_venta DATE NOT NULL,
+  id_clientes INT NOT NULL,
+  foreign key (id_clientes) references Clientes_usuarios(id_clientes),
+  id_producto INT NOT NULL,
+  foreign key (id_producto) references Productos(id_producto),
+  valor_a_pagar decimal) ;
+
+CREATE TRIGGER back_up_ventas 
+AFTER INSERT ON ventas
+FOR EACH ROW 
+INSERT INTO Ventas_back_up(id_Venta,Fecha_venta,id_clientes,id_producto,valor_a_pagar)
+VALUES(NEW.id_Venta,NEW.Fecha_venta,NEW.id_clientes,NEW.id_producto,NEW.valor_a_pagar);
+
+/*Probamos el trigger de tabla espejo en VENTAS*/
+
+INSERT INTO ventas(Fecha_venta,id_clientes,id_producto,valor_a_pagar) VALUES('2022-10-03',4,4008,7500);
+
+select * from ventas;
+select * from ventas_back_up;
+
+/*Tabla bitacora al actualizar tabla Aliados
+Aplico BEFORE y UPDATE*/
+
+CREATE TABLE aliados_bitacora(
+id_bitacora INT NOT NULL AUTO_INCREMENT,
+fecha DATE NOT NULL,
+hora TIME NOT NULL,
+usuario_id VARCHAR(45),
+old_id_cuenta_banc VARCHAR(80),
+new_id_cuenta_banc VARCHAR(80),
+old_Dirección VARCHAR(80),
+new_Dirección VARCHAR(80),
+tipo_operacion varchar(100),
+primary key(id_bitacora));
+
+CREATE TRIGGER update_log_aliados
+BEFORE UPDATE ON aliados
+FOR EACH ROW
+INSERT INTO aliados_bitacora
+(fecha,hora,usuario_id,old_id_cuenta_banc,new_id_cuenta_banc,old_Dirección,new_Dirección,tipo_operacion)
+VALUES
+(curdate(),curtime(),session_user(),OLD.id_cuenta_banc,NEW.id_cuenta_banc,OLD.Dirección,NEW.Dirección,'Actualizacion');
+
+/*Probamos el trigger de tabla bitácora en ALIADOS*/
+
+update aliados set Dirección='Calle 7 1-24' where id_Store='1003';
+select * from aliados;
+select * from aliados_bitacora;
+
+
+/*Tabla bitacora al eliminar un registro en la tabla Eventos
+Aplico BEFORE y DELETE*/
+
+CREATE TABLE eventos_bitacora(
+id_bitacora INT NOT NULL AUTO_INCREMENT,
+fecha DATE NOT NULL,
+hora TIME NOT NULL,
+usuario_id VARCHAR(45),
+old_status VARCHAR(80),
+old_Event_type VARCHAR(80),
+tipo_operacion varchar(100),
+primary key(id_bitacora));
+
+CREATE TRIGGER delete_log_tabla_eventos
+BEFORE DELETE ON eventos
+FOR EACH ROW
+INSERT INTO eventos_bitacora
+(fecha,hora,usuario_id,old_status,old_Event_type,tipo_operacion)
+VALUES
+(curdate(),curtime(),session_user(),OLD.status,OLD.Event_type,'Delete');
+
+/*Probamos el trigger de tabla bitácora en Eventos*/
+
+INSERT INTO eventos (id_VentaXProducto,Gateway,Update_at,Status,Valor_a_pagar,Event_type) VALUES (2120,'SCOTIABANK','2022-10-16',2,120000.00,'PAYMENT');
+DELETE FROM eventos WHERE id_VentaXProducto=2120;
+
+select * from eventos;
+select * from eventos_bitacora;
+
+
+
+
